@@ -1,5 +1,17 @@
 /// <reference types = "Cypress"/>
 
+import { amazonCart } from "../../page-objects/cart"
+import { itemPage } from "../../page-objects/item-details"
+import { LandingPage } from "../../page-objects/landing-page"
+import { LoginPage } from "../../page-objects/logIn"
+import { searchResults } from "../../page-objects/search-results"
+
+const landing = new LandingPage
+const login = new LoginPage
+const search = new searchResults
+const item = new itemPage
+const cart = new amazonCart
+
 describe('Amazon Search', () => {
 
   before(() => {
@@ -13,37 +25,30 @@ describe('Amazon Search', () => {
   })
 
   it('Can  Access the Amazon Mx Webpage', () => {
-    cy.visit('https://www.amazon.com.mx/')
-    cy.title().should('have.string', 'Amazon.com.mx: Precios bajos - Envío rápido - Millones de productos')
+    landing.visitSite()
   })
 
   it('Can Log In', () => {
-    cy.contains('Hola, identifícate').click()
-    cy.get('#ap_email').click().type(Cypress.env('username'))
-    cy.get('#continue').click()
-    cy.get('#ap_password').click().type(Cypress.env('password'))
-    cy.get('#signInSubmit').click()
+    login.logIn()
   })
 
   it('Searches for something', () => {
-    cy.get('#twotabsearchtextbox').click().type('Silverstein{enter}')
+    landing.doSearch()
   })
 
   it('Selects an album', () => {
-    cy.contains('I Am Alive in Everything I Touch').scrollIntoView().click()
+    search.selectAlbum()
   })
 
   it('Adds it to the cart', () => {
-    cy.get('#add-to-cart-button').click()
-    cy.contains('Agregado al carrito')
+    item.addItemToCart()
   })
 
   it('Saves it for later', () => {
-    cy.get('#nav-cart-count-container').click()
-    cy.get('[aria-label = "Guardar para más tarde I Am Alive In Everything I Touch"]').click()
+    cart.saveForLater()
   })
 
   it('Deletes the product', () => {
-    cy.get('[aria-label = "Eliminar I Am Alive In Everything I Touch"]').click()
+    cart.deleteFromCart()
   })
 })
